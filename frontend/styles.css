@@ -1,0 +1,640 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: linear-gradient(180deg, #f4f6fa 0%, #e8ecf5 100%);
+  margin: 0;
+  padding: 2rem;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  margin-bottom: 0.25rem;
+  font-size: 2rem;
+  background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: #666;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+/* === Form / drop zone === */
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+#drop-zone {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1.5rem;
+  background: white;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+#drop-zone:hover {
+  border-color: #4f46e5;
+  background: #f8faff;
+}
+
+#drop-zone.dragging {
+  border-color: #4f46e5;
+  background: #eef2ff;
+  transform: scale(1.01);
+}
+
+.drop-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  color: #4f46e5;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.drop-text {
+  flex: 1;
+  color: #555;
+}
+
+.drop-text strong {
+  color: #4f46e5;
+}
+
+.drop-sub {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+#file-name {
+  margin-left: auto;
+  padding: 0.4rem 0.75rem;
+  background: #eef2ff;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #4338ca;
+  font-weight: 500;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button {
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #4f46e5;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.15s;
+}
+
+button:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+button:disabled {
+  background: #c0c4cc;
+  cursor: not-allowed;
+}
+
+#status {
+  margin: 1rem 0;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Spinner for loading state */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ddd;
+  border-top-color: #4f46e5;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* === Saved decks list === */
+
+#saved-decks {
+  margin: 2rem 0;
+}
+
+#deck-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+
+#deck-list li {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+}
+
+#deck-list .empty {
+  color: #888;
+  font-style: italic;
+  grid-column: 1 / -1;
+}
+
+.deck-open {
+  flex: 1;
+  text-align: left;
+  background: white;
+  color: #222;
+  border: 1px solid #e5e7eb;
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-weight: 400;
+  border-radius: 10px;
+  transition: all 0.15s;
+}
+
+.deck-open:hover {
+  background: #f8faff;
+  border-color: #4f46e5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+}
+
+.deck-name {
+  font-weight: 600;
+  color: #1a1a2e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deck-preview {
+  font-size: 0.85rem;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+  min-height: 2.2em;
+}
+
+.deck-meta {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.deck-meta .mastery {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.mini-progress {
+  height: 4px;
+  background: #f1f5f9;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mini-progress > div {
+  height: 100%;
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  transition: width 0.3s;
+}
+
+/* Last quiz score badge on deck cards */
+.quiz-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.quiz-badge.good {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.quiz-badge.ok {
+  background: #fef3c7;
+  color: #a16207;
+}
+
+.quiz-badge.low {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.quiz-badge.empty {
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.deck-delete {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  background: transparent;
+  color: #bbb;
+  font-size: 1.2rem;
+  padding: 0.2rem 0.5rem;
+  line-height: 1;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+#deck-list li:hover .deck-delete {
+  opacity: 1;
+}
+
+.deck-delete:hover {
+  background: #fee;
+  color: #c00;
+}
+
+/* === Flashcard viewer === */
+
+#flashcard-section {
+  margin-top: 2rem;
+}
+
+.deck-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.deck-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+/* Study / Quiz mode toggle */
+.mode-toggle {
+  display: inline-flex;
+  background: #eef2ff;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.mode-btn {
+  background: transparent;
+  color: #555;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 6px;
+}
+
+.mode-btn:hover:not(.active) {
+  background: rgba(79, 70, 229, 0.08);
+}
+
+.mode-btn.active {
+  background: white;
+  color: #4f46e5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress bar (mastery in study mode, score in quiz mode) */
+.progress-wrap {
+  margin-bottom: 1rem;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#progress-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.4s ease;
+  border-radius: 4px;
+}
+
+.mastery-fill {
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+}
+
+.quiz-fill {
+  background: linear-gradient(90deg, #4f46e5, #9333ea);
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  perspective: 1000px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.card.flipped .card-front {
+  transform: rotateY(180deg);
+}
+
+.card.flipped .card-back {
+  transform: rotateY(0);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
+  backface-visibility: hidden;
+  transition: transform 0.5s;
+  text-align: center;
+  font-size: 1.15rem;
+  line-height: 1.5;
+}
+
+.card-back {
+  transform: rotateY(-180deg);
+  background: linear-gradient(135deg, #eef2ff 0%, #f3e8ff 100%);
+}
+
+/* Status indicators on the card border */
+.card.status-got_it .card-face {
+  box-shadow: 0 8px 24px rgba(34, 197, 94, 0.25), inset 0 0 0 3px #22c55e;
+}
+
+.card.status-review .card-face {
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25), inset 0 0 0 3px #ef4444;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.controls button {
+  min-width: 90px;
+}
+
+#counter {
+  color: #666;
+  font-weight: 500;
+}
+
+.hint {
+  text-align: center;
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+/* Got it / Review again buttons (used in both study and quiz modes) */
+.status-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.status-buttons button {
+  flex: 1;
+  padding: 0.7rem;
+  font-weight: 600;
+}
+
+.review-btn {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+.review-btn:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.got-it-btn {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.got-it-btn:hover:not(:disabled) {
+  background: #dcfce7;
+}
+
+/* Quiz reveal button */
+#reveal-btn {
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+}
+
+/* Quiz type selector (Flashcard / Multiple Choice / Short Answer) */
+.quiz-type-selector {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.quiz-type-selector label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #555;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+}
+
+.quiz-type-selector label:has(input:checked) {
+  background: #eef2ff;
+  color: #4f46e5;
+  font-weight: 600;
+}
+
+.quiz-type-selector input[type="radio"] {
+  accent-color: #4f46e5;
+}
+
+/* Multiple choice option buttons */
+.mc-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.mc-option {
+  background: white;
+  color: #222;
+  border: 2px solid #e5e7eb;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  min-height: 70px;
+  transition: all 0.15s;
+}
+
+.mc-option:hover:not(:disabled) {
+  border-color: #4f46e5;
+  background: #f8faff;
+  transform: translateY(-1px);
+}
+
+.mc-option:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.mc-option.correct {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  color: #16a34a;
+  opacity: 1;
+  font-weight: 600;
+}
+
+.mc-option.wrong {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #dc2626;
+  opacity: 1;
+  font-weight: 600;
+}
+
+
+/* Quiz results screen */
+#quiz-results {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+#quiz-results h3 {
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+
+.score-circle {
+  width: 160px;
+  height: 160px;
+  margin: 1.5rem auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #9333ea);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 32px rgba(79, 70, 229, 0.3);
+}
+
+#score-pct {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+#score-detail {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+#score-message {
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+#restart-quiz-btn {
+  padding: 0.75rem 2rem;
+}
+
+kbd {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  box-shadow: 0 1px 0 #d1d5db;
+}

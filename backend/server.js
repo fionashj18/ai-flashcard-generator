@@ -5,7 +5,7 @@ const express = require("express");
 const multer = require("multer");
 const { extractText } = require("./services/fileParser");
 const { generateFlashcards } = require("./services/aiService");
-const { saveDeck, listDecks, getDeck, deleteDeck, updateCardStatus } = require("./db");
+const { saveDeck, listDecks, getDeck, deleteDeck, updateCardStatus, recordQuizResult } = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -62,6 +62,20 @@ app.patch("/api/flashcards/:id", (req, res) => {
   try {
     const result = updateCardStatus(Number(req.params.id), req.body.status);
     if (result.changes === 0) return res.status(404).json({ error: "Card not found" });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Record a completed quiz: saves the score on the deck and updates each card's status
+app.post("/api/decks/:id/quiz-result", (req, res) => {
+  try {
+    const { score, cardResults } = req.body;
+    if (typeof score !== "number" || !Array.isArray(cardResults)) {
+      return res.status(400).json({ error: "score (number) and cardResults (array) required" });
+    }
+    recordQuizResult(Number(req.params.id), score, cardResults);
     res.json({ ok: true });
   } catch (err) {
     res.status(400).json({ error: err.message });

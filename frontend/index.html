@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI Flashcard Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>AI Flashcard Generator</h1>
+        <p class="subtitle">Upload lecture notes or slides to generate study flashcards.</p>
+      </header>
+
+      <form id="upload-form">
+        <label id="drop-zone" for="file-input">
+          <div class="drop-icon">+</div>
+          <div class="drop-text">
+            <strong>Click to upload</strong> or drag and drop
+            <div class="drop-sub">PDF, TXT, or MD</div>
+          </div>
+          <div id="file-name" hidden></div>
+          <input type="file" id="file-input" accept=".pdf,.txt,.md" hidden />
+        </label>
+        <button type="submit" id="submit-btn" disabled>Generate Flashcards</button>
+      </form>
+
+      <div id="status"></div>
+
+      <section id="saved-decks">
+        <h2>Saved Decks</h2>
+        <ul id="deck-list"></ul>
+      </section>
+
+      <section id="flashcard-section" hidden>
+        <div class="deck-header">
+          <h2 id="deck-title"></h2>
+          <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="study">Study</button>
+            <button class="mode-btn" data-mode="quiz">Quiz</button>
+          </div>
+        </div>
+
+        <!-- Progress bar: shows mastery in study mode, score in quiz mode -->
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span id="progress-text">0 / 0</span>
+            <span id="progress-pct">0%</span>
+          </div>
+          <div class="progress-bar"><div id="progress-fill"></div></div>
+        </div>
+
+        <!-- Quiz type selector: only visible in quiz mode -->
+        <div id="quiz-type-selector" class="quiz-type-selector" hidden>
+          <label><input type="radio" name="quiz-type" value="flashcard" checked /> Flashcard</label>
+          <label><input type="radio" name="quiz-type" value="multiple-choice" /> Multiple Choice</label>
+        </div>
+
+        <div id="card" class="card">
+          <div class="card-face card-front"></div>
+          <div class="card-face card-back"></div>
+        </div>
+
+        <!-- Multiple choice options -->
+        <div id="mc-options" class="mc-options" hidden></div>
+
+        <!-- Study controls: mark status + navigate -->
+        <div id="study-controls" class="controls">
+          <button id="prev-btn">&larr; Prev</button>
+          <span id="counter"></span>
+          <button id="next-btn">Next &rarr;</button>
+        </div>
+
+        <div id="status-buttons" class="status-buttons" hidden>
+          <button class="review-btn" data-status="review">Review again</button>
+          <button class="got-it-btn" data-status="got_it">Got it</button>
+        </div>
+
+        <!-- Quiz controls: reveal then self-assess -->
+        <div id="quiz-controls" hidden>
+          <button id="reveal-btn">Reveal answer</button>
+          <div id="quiz-grade" class="status-buttons" hidden>
+            <button class="review-btn" data-grade="wrong">Got it wrong</button>
+            <button class="got-it-btn" data-grade="right">Got it right</button>
+          </div>
+        </div>
+
+        <!-- Quiz results screen -->
+        <div id="quiz-results" hidden>
+          <h3>Quiz Complete!</h3>
+          <div class="score-circle">
+            <div id="score-pct">0%</div>
+            <div id="score-detail">0 / 0</div>
+          </div>
+          <p id="score-message"></p>
+          <button id="restart-quiz-btn">Restart Quiz</button>
+        </div>
+
+        <p class="hint" id="study-hint">Click card to flip &middot; <kbd>&larr;</kbd> <kbd>&rarr;</kbd> navigate &middot; <kbd>Space</kbd> flip</p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

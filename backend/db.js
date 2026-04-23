@@ -9,7 +9,9 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS decks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    last_quiz_score INTEGER,
+    last_quiz_at TEXT
   );
 
   CREATE TABLE IF NOT EXISTS flashcards (
@@ -25,10 +27,16 @@ db.exec(`
 
 db.pragma("foreign_keys = ON");
 
-// Migration: add `status` column to existing flashcards tables that pre-date it
-const columns = db.prepare("PRAGMA table_info(flashcards)").all();
-if (!columns.some((c) => c.name === "status")) {
+// Migrations for existing databases that pre-date these columns
+const cardCols = db.prepare("PRAGMA table_info(flashcards)").all();
+if (!cardCols.some((c) => c.name === "status")) {
   db.exec("ALTER TABLE flashcards ADD COLUMN status TEXT NOT NULL DEFAULT 'unseen'");
+}
+
+const deckCols = db.prepare("PRAGMA table_info(decks)").all();
+if (!deckCols.some((c) => c.name === "last_quiz_score")) {
+  db.exec("ALTER TABLE decks ADD COLUMN last_quiz_score INTEGER");
+  db.exec("ALTER TABLE decks ADD COLUMN last_quiz_at TEXT");
 }
 
 function saveDeck(name, flashcards) {
@@ -51,6 +59,7 @@ function listDecks() {
   return db
     .prepare(
       `SELECT d.id, d.name, d.created_at,
+              d.last_quiz_score, d.last_quiz_at,
               COUNT(f.id) AS card_count,
               SUM(CASE WHEN f.status = 'got_it' THEN 1 ELSE 0 END) AS got_it_count,
               (SELECT question FROM flashcards
@@ -84,4 +93,23 @@ function updateCardStatus(cardId, status) {
   return db.prepare("UPDATE flashcards SET status = ? WHERE id = ?").run(status, cardId);
 }
 
-module.exports = { saveDeck, listDecks, getDeck, deleteDeck, updateCardStatus };
+// Save the latest quiz score for a deck, and update each card's status based on
+// whether the user got it right (got_it) or wrong (review) during the quiz.
+function recordQuizResult(deckId, score, cardResults) {
+  const updateDeck = db.prepare(
+    "UPDATE decks SET last_quiz_score = ?, last_quiz_at = CURRENT_TIMESTAMP WHERE id = ?"
+  );
+  const updateCard = db.prepare(
+    "UPDATE flashcards SET status = ? WHERE id = ? AND deck_id = ?"
+  );
+
+  const tx = db.transaction(() => {
+    updateDeck.run(score, deckId);
+    cardResults.forEach(({ cardId, correct }) => {
+      updateCard.run(correct ? "got_it" : "review", cardId, deckId);
+    });
+  });
+  tx();
+}
+
+module.exports = { saveDeck, listDecks, getDeck, deleteDeck, updateCardStatus, recordQuizResult };
