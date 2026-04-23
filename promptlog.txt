@@ -1,0 +1,15 @@
+question 1: i need to make a project on anything here are the details could you give me some ideas: Decide on a creative idea. Pick a project that excites you and can be completed in ~8 hours. Focus on something that will be useful or impressive on your portfolio. The safest ideas will be those that you can get working relatively quickly, but which have many features that you can add and improve once the core is working.
+First focus on substance over polish: Demonstrate clear functionality and learning. UI polish will help your grade, but the graders will first evaluate for functionality and technical implementation.
+
+1. Build the core app. You may use any stack (i.e. any combination of technologies) that meets the project requirements, but make sure your project includes at least two of the following:
+   * Frontend-backend communication (e.g., fetch + API endpoint)
+   * Thoughtful third-party API usage with secure keys
+   * Use of a database
+   * Use of Expo and/or React Native or something else that allows it to run on a physical phone
+   * Substantial data analysis or visualization
+   * Exceptionally rich interactivity through a technology we haven't explored yet, like WebGL
+   * Use of a computer vision or ML module/algorithm
+   * (If these features really don't fit your idea, talk to Mike ASAP in case we can work something out.)
+Also include at least one substantial part of the code that you wrote or meaningfully modified yourself so you can explain it in person or on video.
+
+question 2: 
