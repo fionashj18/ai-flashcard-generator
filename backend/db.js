@@ -4,7 +4,7 @@ const path = require("path");
 const db = new Database(path.join(__dirname, "flashcards.db"));
 
 // Two tables: one row per deck, one row per flashcard.
-// ON DELETE CASCADE means deleting a deck also deletes its flashcards.
+// `status` tracks the user's study progress: 'unseen' | 'got_it' | 'review'
 db.exec(`
   CREATE TABLE IF NOT EXISTS decks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -18,14 +18,20 @@ db.exec(`
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     position INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'unseen',
     FOREIGN KEY (deck_id) REFERENCES decks(id) ON DELETE CASCADE
   );
 `);
 
 db.pragma("foreign_keys = ON");
 
+// Migration: add `status` column to existing flashcards tables that pre-date it
+const columns = db.prepare("PRAGMA table_info(flashcards)").all();
+if (!columns.some((c) => c.name === "status")) {
+  db.exec("ALTER TABLE flashcards ADD COLUMN status TEXT NOT NULL DEFAULT 'unseen'");
+}
+
 function saveDeck(name, flashcards) {
-  // Use a transaction so inserting the deck + all its cards is atomic
   const insertDeck = db.prepare("INSERT INTO decks (name) VALUES (?)");
   const insertCard = db.prepare(
     "INSERT INTO flashcards (deck_id, question, answer, position) VALUES (?, ?, ?, ?)"
@@ -46,6 +52,7 @@ function listDecks() {
     .prepare(
       `SELECT d.id, d.name, d.created_at,
               COUNT(f.id) AS card_count,
+              SUM(CASE WHEN f.status = 'got_it' THEN 1 ELSE 0 END) AS got_it_count,
               (SELECT question FROM flashcards
                WHERE deck_id = d.id AND position = 0) AS preview
        FROM decks d
@@ -61,7 +68,7 @@ function getDeck(id) {
   if (!deck) return null;
   const cards = db
     .prepare(
-      "SELECT question, answer FROM flashcards WHERE deck_id = ? ORDER BY position"
+      "SELECT id, question, answer, status FROM flashcards WHERE deck_id = ? ORDER BY position"
     )
     .all(id);
   return { ...deck, flashcards: cards };
@@ -71,4 +78,10 @@ function deleteDeck(id) {
   return db.prepare("DELETE FROM decks WHERE id = ?").run(id);
 }
 
-module.exports = { saveDeck, listDecks, getDeck, deleteDeck };
+function updateCardStatus(cardId, status) {
+  const valid = ["unseen", "got_it", "review"];
+  if (!valid.includes(status)) throw new Error(`Invalid status: ${status}`);
+  return db.prepare("UPDATE flashcards SET status = ? WHERE id = ?").run(status, cardId);
+}
+
+module.exports = { saveDeck, listDecks, getDeck, deleteDeck, updateCardStatus };

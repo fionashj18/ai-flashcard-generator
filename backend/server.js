@@ -5,7 +5,7 @@ const express = require("express");
 const multer = require("multer");
 const { extractText } = require("./services/fileParser");
 const { generateFlashcards } = require("./services/aiService");
-const { saveDeck, listDecks, getDeck, deleteDeck } = require("./db");
+const { saveDeck, listDecks, getDeck, deleteDeck, updateCardStatus } = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -55,6 +55,17 @@ app.delete("/api/decks/:id", (req, res) => {
   const result = deleteDeck(Number(req.params.id));
   if (result.changes === 0) return res.status(404).json({ error: "Deck not found" });
   res.json({ ok: true });
+});
+
+// Update a single card's study status (got_it / review / unseen)
+app.patch("/api/flashcards/:id", (req, res) => {
+  try {
+    const result = updateCardStatus(Number(req.params.id), req.body.status);
+    if (result.changes === 0) return res.status(404).json({ error: "Card not found" });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 app.listen(PORT, () => {
