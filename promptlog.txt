@@ -1,26 +1,48 @@
-question 1: i need to make a project on anything here are the details could you give me some ideas: Decide on a creative idea. Pick a project that excites you and can be completed in ~8 hours. Focus on something that will be useful or impressive on your portfolio. The safest ideas will be those that you can get working relatively quickly, but which have many features that you can add and improve once the core is working.
-First focus on substance over polish: Demonstrate clear functionality and learning. UI polish will help your grade, but the graders will first evaluate for functionality and technical implementation.
+question 1: i need to make a project on anything here are the details could you 
+give me some ideas: Decide on a creative idea. Pick a project that excites you 
+and can be completed in ~8 hours. Focus on something that will be useful or 
+impressive on your portfolio. The safest ideas will be those that you can get
+working relatively quickly, but which have many features that you can add and 
+improve once the core is working.
+First focus on substance over polish: Demonstrate clear functionality and 
+learning. UI polish will help your grade, but the graders will first evaluate 
+for functionality and technical implementation.
 
-1. Build the core app. You may use any stack (i.e. any combination of technologies) that meets the project requirements, but make sure your project includes at least two of the following:
+1. Build the core app. You may use any stack (i.e. any combination of 
+technologies) that meets the project requirements, but make sure your project 
+includes at least two of the following:
    * Frontend-backend communication (e.g., fetch + API endpoint)
    * Thoughtful third-party API usage with secure keys
    * Use of a database
-   * Use of Expo and/or React Native or something else that allows it to run on a physical phone
+   * Use of Expo and/or React Native or something else that allows it to run 
+   on a physical phone
    * Substantial data analysis or visualization
-   * Exceptionally rich interactivity through a technology we haven't explored yet, like WebGL
+   * Exceptionally rich interactivity through a technology we haven't explored 
+   yet, like WebGL
    * Use of a computer vision or ML module/algorithm
-   * (If these features really don't fit your idea, talk to Mike ASAP in case we can work something out.)
-Also include at least one substantial part of the code that you wrote or meaningfully modified yourself so you can explain it in person or on video.
+   * (If these features really don't fit your idea, talk to Mike ASAP in case 
+   we can work something out.)
+Also include at least one substantial part of the code that you wrote or 
+meaningfully modified yourself so you can explain it in person or on video.
 
-question 2: I want to make an AI flashcard generator where it will take lecture slides or notes and generator flashcards from it. What files are needed for this project?
+question 2: I want to make an AI flashcard generator where it will take 
+lecture slides or notes and generator flashcards from it. What files are 
+needed for this project?
 
 question 3: can you  add a database next (SQLite to save decks across sessions)
 
-question 4: i just tested but it gave me this when i tried to generate the flashcards Error: Could not resolve authentication method. Expected either apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization" headers to be explicitly omitted
+question 4: i just tested but it gave me this when i tried to generate the 
+flashcards Error: Could not resolve authentication method. Expected either 
+apiKey or authToken to be set. Or for one of the "X-Api-Key" or "Authorization"
+ headers to be explicitly omitted
 
-question 5: it works now but i want to improve on the UI/UX. I want the flashcards to have a preview of the first card. And where you insert the file we can drag into it. and any other ui you think would be nice 
+question 5: it works now but i want to improve on the UI/UX. I want the 
+flashcards to have a preview of the first card. And where you insert the file 
+we can drag into it. and any other ui you think would be nice 
 
-question 6: for the quiz is there a way to have multipie choice answers and like a choice for short response.
+question 6: for the quiz is there a way to have multipie choice answers and 
+like a choice for short response.
 
-question 7: for the percentage on mastery could you have the quiz grade change that or maybe add a percentage on last quiz taken
+question 7: for the percentage on mastery could you have the quiz grade 
+change that or maybe add a percentage on last quiz taken
 
